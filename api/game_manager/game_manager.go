@@ -1,8 +1,10 @@
 package game_manager
 
 import (
-	"math/rand"
-	"log"
+	_ "math/rand"
+	_ "log"
+
+	"gamch1k/spy-api/api/database"
 )
 
 type Game struct {
@@ -14,6 +16,11 @@ type Game struct {
 }
 
 var Games = []Game{}
+
+
+func GetGames() *[]Game {
+	return &Games
+}
 
 
 func GameExists(gameId int) bool {
@@ -28,19 +35,23 @@ func GameExists(gameId int) bool {
 
 
 func NewGame() {
-	game_id := rand.Intn(99999)
+	database.CreateGame()
+}
 
-	for GameExists(game_id) {
-		game_id = rand.Intn(99999)
+func Connect(game_id int, player_id string) (bool, error) {
+	
+	if !GameExists(game_id) {
+		return false, nil
 	}
 
-	Games = append(Games, Game{
-		GameId: game_id,
-		Players: []string{},
-		SpyIds: []int{},
-		Topic: "",
-		Started: false,
-	})
-
-	log.Println(Games)
+	for _, game := range *GetGames() {
+		if game.GameId == game_id {
+			
+			game.Players = append(game.Players, player_id)
+		}
+	}
+	
+	
+	return true, nil
 }
+
