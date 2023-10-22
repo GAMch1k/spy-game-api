@@ -6,5 +6,5 @@ import (
 
 
 func main() {
-	server.Start("localhost:3000")
+	server.Start("0.0.0.0:3000")
 }
